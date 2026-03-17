@@ -1,5 +1,6 @@
 #include "raylib.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 #define CELL_SIZE 80
 #define COLS 10
@@ -19,11 +20,13 @@ Texture2D menu_background;
 
 Vector2 snake[MAX_SNAKE_LENGTH];
 Vector2 direction = {1, 0};
-Vector2 food = {5, 5};
+Vector2 food[20];
 
 int snakeLength = 3;
 float moveTimer = 0;
 float moveInterval = 0.20f;
+
+int food_amount = 1;
 
 bool game_over = false;
 bool game_won = false;
@@ -34,7 +37,8 @@ Scene current_scene = Menu_scene;
 void resetGame(void) {
     snakeLength = 3;
     direction = (Vector2){1, 0};
-    food = (Vector2){5, 5};
+    food_amount = 1;
+    food[0] = (Vector2){ROWS / 4, COLS / 4};
     moveTimer = 0;
     game_over = false;
     game_won = false;
@@ -57,6 +61,7 @@ int main(void) {
     snake[0] = (Vector2){COLS / 2, ROWS / 2};
     snake[1] = (Vector2){COLS / 2 - 1, ROWS / 2};
     snake[2] = (Vector2){COLS / 2 - 2, ROWS / 2};
+    food[0] = (Vector2){ROWS / 4, COLS / 4};
 
 
     while (!WindowShouldClose()) {
@@ -142,13 +147,13 @@ int main(void) {
                 }
 
                 // movement
-                if (IsKeyPressed(KEY_D) && direction.x != -1)
+                if ((IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) && direction.x != -1)
                         direction = (Vector2){1, 0};
-                    else if (IsKeyPressed(KEY_A) && direction.x != 1)
+                    else if ((IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) && direction.x != 1)
                         direction = (Vector2){-1, 0};
-                    else if (IsKeyPressed(KEY_S) && direction.y != -1)
+                    else if ((IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) && direction.y != -1)
                         direction = (Vector2){0, 1};
-                    else if (IsKeyPressed(KEY_W) && direction.y != 1)
+                    else if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) && direction.y != 1)
                         direction = (Vector2){0, -1};
 
                 // main logic
@@ -158,10 +163,22 @@ int main(void) {
                     moveTimer = 0;
 
                     // did snake eat food?
-                    if (snake[0].x == food.x && snake[0].y == food.y) {
-                        snakeLength++;
-                        food.x = GetRandomValue(0, COLS - 1);
-                        food.y = GetRandomValue(0, ROWS - 1);
+                    for (int i_f = 0; i_f < food_amount; i_f++) {
+                        if (snake[0].x == food[i_f].x && snake[0].y == food[i_f].y) {
+                            snakeLength++;
+                            food[i_f].x = GetRandomValue(0, COLS - 1);
+                            food[i_f].y = GetRandomValue(0, ROWS - 1);
+                        }
+                    }
+
+                    // did food spawn in snake
+                    for (int i = 1; i < snakeLength; i++) {
+                        for (int y = 0; y < food_amount; y++) {
+                            if (food[y].x == snake[i].x && food[y].y == snake[i].y) {
+                                food[y].x = GetRandomValue(0, COLS - 1);
+                                food[y].y = GetRandomValue(0, ROWS - 1);
+                            }
+                        }
                     }
 
                     // move body after head
@@ -191,15 +208,23 @@ int main(void) {
                     }
 
                 }
+                if (snakeLength >= 10) {
+                    food_amount = 3;
+                }else if (snakeLength >= 40) {
+                    food_amount = 5;
+                }
 
-                // draw food
-                DrawRectangle(
-                MARGIN + food.x * CELL_SIZE,
-                MARGIN + food.y * CELL_SIZE,
-                CELL_SIZE - 1,
-                CELL_SIZE - 1,
-                RED
-                );
+                for (int i = 0; i < food_amount; i++) {
+                    // draw food
+                    DrawRectangle(
+                    MARGIN + food[i].x * CELL_SIZE,
+                    MARGIN + food[i].y * CELL_SIZE,
+                    CELL_SIZE - 1,
+                    CELL_SIZE - 1,
+                    RED
+                    );
+                }
+
 
                 // draw snake
                 for (int i = 0; i < snakeLength; i++) {
