@@ -11,9 +11,9 @@ These games work — just not correctly. The rules are off. Something familiar i
 
 | Game | What's wrong |
 |------|-------------|
-| 🐍 **Snake** | Eating food makes you shorter |
+| 🐍 **Snake** | ... |
 | 💣 **MineSweeper** | The numbers are wrong |
-| ❌ **TikTakToe** | X always loses. Always. |
+| ❌ **TikTakToe** | Ai can make moves outside of the map |
 | 🪢 **Hangman** | Correct guesses add a body part |
 
 ---
@@ -23,17 +23,17 @@ These games work — just not correctly. The rules are off. Something familiar i
 Requires [raylib](https://www.raylib.com/) installed.
 
 ```bash
-git clone https://github.com/Jam1nna/RadoGames
-cd RadoGames/<game-name>
-gcc main.c -lraylib -lm -o game && ./game
+>git clone https://github.com/Jam1nna/RadoGames
+>cd RadoGames/
+>gcc main.c -lraylib -lm -o game && ./game
 ```
 
 ---
 
 ## Stack
 
-- **C** — no engine
-- **raylib** — window, input, drawing
+- **C**
+- **raylib**
 - intentionally wrong
 
 ---
