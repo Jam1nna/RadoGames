@@ -11,9 +11,9 @@ These games work — just not correctly. The rules are off. Something familiar i
 
 | Game | What's wrong |
 |------|-------------|
-| 🐍 **Snake** | ... |
+| 🐍 **Snake** | Reversed? |
 | 💣 **MineSweeper** | The numbers are wrong |
-| ❌ **TikTakToe** | Ai can make moves outside of the map |
+| ❌ **TikTakToe** | Some virus infected the game |
 | 🪢 **Hangman** | Correct guesses add a body part |
 
 ---
