@@ -1,20 +1,18 @@
 # RadoGames
 ### *A collection of broken games*
 
-Built in **C** with **raylib**. No engine. No excuses.
-
-These games work — just not correctly. The rules are off. Something familiar is slightly wrong in a way you can't quite ignore.
+Rado GAMES, ou jes!
 
 ---
 
-## Games
+## hry co tam su
 
-| Game | What's wrong |
+| hra | hej |
 |------|-------------|
-| 🐍 **Snake** | Reversed? |
-| 💣 **MineSweeper** | The numbers are wrong |
-| ❌ **TikTakToe** | Some virus infected the game |
-| 🪢 **Hangman** | Correct guesses add a body part **WIP**| 
+| 🐍 **Snake** | snake ale divny |
+| 💣 **MineSweeper** | minesweeper |
+| ❌ **TikTakToe** | tiktaktou s covid 19 |
+| 🪢 **Hangman** | uh... ten neni **WIP** |
 
 ---
 
