@@ -1,5 +1,5 @@
 # RadoGames
-### *A collection of broken games*
+### *kolekcia hier ale dobre hry. hej*
 
 Rado GAMES, ou jes!
 
