@@ -14,7 +14,7 @@ These games work — just not correctly. The rules are off. Something familiar i
 | 🐍 **Snake** | Reversed? |
 | 💣 **MineSweeper** | The numbers are wrong |
 | ❌ **TikTakToe** | Some virus infected the game |
-| 🪢 **Hangman** | Correct guesses add a body part |
+| 🪢 **Hangman** | Correct guesses add a body part | **WIP**
 
 ---
 
