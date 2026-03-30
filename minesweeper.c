@@ -217,7 +217,7 @@ void RenderTiles() {
 void GameStartup() {
     ChangeDirectory(GetApplicationDirectory());
 
-    InitAudioDevice();
+    // InitAudioDevice() removed - menu.c owns the audio device
     SetMasterVolume(1.0f);
 
     Image image1 = LoadImage("assets/flag.png");
@@ -341,6 +341,7 @@ void GameRender() {
         DrawText("[N]ova Hra", 120, 220, 20, WHITE);
         DrawText("ESC na VYPNUTIE", 120, 280, 20, WHITE);
         DrawText("Made by Metju a Miso", 120, 500, 20, WHITE);
+        DrawText("[Q] Spat do RadoGames", 120, 540, 20, GRAY); // back to menu
         break;
 
     case STATE_MODE_SELECT:
@@ -411,7 +412,7 @@ void GameShutdown() {
     for (int i = 0; i < MAX_SOUNDS; i++)   UnloadSound(sounds[i]);
     StopMusicStream(music[MUSIC_ONE]);
     UnloadMusicStream(music[MUSIC_ONE]);
-    CloseAudioDevice();
+    // CloseAudioDevice() removed - menu.c owns the audio device
 }
 
 void GameReset() {
@@ -448,12 +449,18 @@ void GameReset() {
     gameState = STATE_PLAYING;
 }
 
-int main() {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "MINESWEEP");
-    SetTargetFPS(60);
+void run_minesweeper() {
+    // resize window for minesweeper
+    SetWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+    SetWindowTitle("MINESWEEP");
+
     GameStartup();
 
     while (!WindowShouldClose()) {
+        // Q on main menu = back to RadoGames
+        if (gameState == STATE_MAIN_MENU && IsKeyPressed(KEY_Q)) {
+            break;
+        }
         GameUpdate();
         BeginDrawing();
         ClearBackground(DARKBLUE);
@@ -462,6 +469,4 @@ int main() {
     }
 
     GameShutdown();
-    CloseWindow();
-    return 0;
 }

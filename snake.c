@@ -3,10 +3,10 @@
 #include <stdio.h>
 
 #define CELL_SIZE 80
-#define COLS 10
-#define ROWS 10
+#define SNAKE_COLS 10
+#define SNAKE_ROWS 10
 #define MARGIN 20
-#define MAX_SNAKE_LENGTH ROWS * COLS
+#define MAX_SNAKE_LENGTH SNAKE_ROWS * SNAKE_COLS
 #define START_LENGTH 10
 #define MIN_SNAKE_LENGTH 1
 #define GROW_INTERVAL 5.0f
@@ -19,7 +19,8 @@ typedef enum {
     Win_scene
 } Scene;
 
-Texture2D menu_background;
+
+Texture2D sn_menu_background;
 
 Vector2 snake[MAX_SNAKE_LENGTH];
 Vector2 direction = {1, 0};
@@ -50,8 +51,8 @@ int new_food_amount = 2;
 
 void respawnFood(int idx) {
     while (true) {
-        int rx = GetRandomValue(0, COLS - 1);
-        int ry = GetRandomValue(0, ROWS - 1);
+        int rx = GetRandomValue(0, SNAKE_COLS - 1);
+        int ry = GetRandomValue(0, SNAKE_ROWS - 1);
         bool onSnake = false;
         for (int i = 0; i < snakeLength; i++)
             if (snake[i].x == rx && snake[i].y == ry) { onSnake = true; break; }
@@ -68,10 +69,10 @@ void resetGame(void) {
     totalGameTime = 0;
     game_over = false;
     game_won = false;
-    Vector2 golden_apple = {-10, -10};
+    golden_apple = (Vector2){-10, -10};
 
     for (int i = 0; i < START_LENGTH; i++) {
-        snake[i] = (Vector2){COLS / 2 - i, ROWS / 2};
+        snake[i] = (Vector2){SNAKE_COLS / 2 - i, SNAKE_ROWS / 2};
     }
     for (int i = 0; i < food_amount; i++) {
         respawnFood(i);
@@ -79,18 +80,18 @@ void resetGame(void) {
 }
 
 
-int main(void) {
-	const int width  = MARGIN * 2 + COLS * CELL_SIZE;
-    const int height = MARGIN * 2 + ROWS * CELL_SIZE;
+void run_snake(void) {
+	const int width  = MARGIN * 2 + SNAKE_COLS * CELL_SIZE;
+    const int height = MARGIN * 2 + SNAKE_ROWS * CELL_SIZE;
 
-    InitWindow(width, height, "SNAKE");
-    SetTargetFPS(60);
+    // resize window for snake
+    SetWindowSize(width, height);
+    SetWindowTitle("SNAKE");
 
     respawnFood(0);
 	respawnFood(1);
 
-
-    menu_background = LoadTexture("assets/menu_bg1.png");
+    sn_menu_background = LoadTexture("assets/menu_bg1.png");
 
     while (!WindowShouldClose()) {
 
@@ -108,8 +109,8 @@ int main(void) {
         	resetGame();
 
         	// Draw Background
-        	DrawTexturePro(menu_background,
-                    (Rectangle){0, 0, menu_background.width, menu_background.height},
+        	DrawTexturePro(sn_menu_background,
+                    (Rectangle){0, 0, sn_menu_background.width, sn_menu_background.height},
                     (Rectangle){0, 0, GetScreenWidth(), GetScreenHeight()},
                     (Vector2){0, 0}, 0.0f, WHITE);
 
@@ -139,6 +140,13 @@ int main(void) {
         	if (IsKeyPressed(KEY_ENTER)) {
         		current_scene = Play_scene;
         	}
+            // Q on snake menu = back to RadoGames
+            if (IsKeyPressed(KEY_Q)) {
+                UnloadTexture(sn_menu_background);
+                current_scene = Menu_scene;
+                EndDrawing();
+                return;
+            }
         	break;
         case Play_scene:
 
@@ -210,14 +218,14 @@ int main(void) {
             DrawText(TextFormat("G: %0.d", g_food_chance), 20, height - 20, 20, GOLD);
             if (g_food_chance == 531 && snakeLength >= 20) {
                 if (golden_apple.x == -10 && golden_apple.y == -10) {
-                    golden_apple.x = GetRandomValue(0, COLS - 1);
-                    golden_apple.y = GetRandomValue(0, ROWS - 1);
+                    golden_apple.x = GetRandomValue(0, SNAKE_COLS - 1);
+                    golden_apple.y = GetRandomValue(0, SNAKE_ROWS - 1);
                 }
                 // Is in body or food?
                 for (int i = 1; i < snakeLength; i++) {
                     if ((snake[i].x == golden_apple.x && snake[i].y == golden_apple.y) || (food[i].x == golden_apple.x && food[i].y == golden_apple.y)) {
-                        golden_apple.x = GetRandomValue(0, COLS - 1);
-                        golden_apple.y = GetRandomValue(0, ROWS - 1);
+                        golden_apple.x = GetRandomValue(0, SNAKE_COLS - 1);
+                        golden_apple.y = GetRandomValue(0, SNAKE_ROWS - 1);
                     }
                 }
 
@@ -288,8 +296,8 @@ int main(void) {
 	                    // }
 
 	                    // wall collision
-	                    if (snake[0].x < 0 || snake[0].x >= COLS ||
-	                        snake[0].y < 0 || snake[0].y >= ROWS) {
+	                    if (snake[0].x < 0 || snake[0].x >= SNAKE_COLS ||
+	                        snake[0].y < 0 || snake[0].y >= SNAKE_ROWS) {
 	                        game_over = true;
 	                    }
 
@@ -313,10 +321,10 @@ int main(void) {
 	                }
 
         	// Draw grid
-                for (int x = 0; x <= COLS; x++)
-                    DrawLine(MARGIN + x*CELL_SIZE, MARGIN, MARGIN + x*CELL_SIZE, MARGIN + ROWS*CELL_SIZE, Fade(WHITE, 0.1f));
-                for (int y = 0; y <= ROWS; y++)
-                    DrawLine(MARGIN, MARGIN + y*CELL_SIZE, MARGIN + COLS*CELL_SIZE, MARGIN + y*CELL_SIZE, Fade(WHITE, 0.1f));
+                for (int x = 0; x <= SNAKE_COLS; x++)
+                    DrawLine(MARGIN + x*CELL_SIZE, MARGIN, MARGIN + x*CELL_SIZE, MARGIN + SNAKE_ROWS*CELL_SIZE, Fade(WHITE, 0.1f));
+                for (int y = 0; y <= SNAKE_ROWS; y++)
+                    DrawLine(MARGIN, MARGIN + y*CELL_SIZE, MARGIN + SNAKE_COLS*CELL_SIZE, MARGIN + y*CELL_SIZE, Fade(WHITE, 0.1f));
         	break;
 
         case Loose_scene:
@@ -355,5 +363,5 @@ int main(void) {
 
     	EndDrawing();
     }
-    CloseWindow();
+    UnloadTexture(sn_menu_background);
 }

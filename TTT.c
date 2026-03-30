@@ -34,8 +34,9 @@ const char* diff[3] = {"Normal", "Weird", "Glitch"};
 
 char board[BOARD_SIZE][BOARD_SIZE];
 
-Texture2D menu_background;
-Texture2D play_background;
+
+Texture2D ttt_menu_background;
+Texture2D ttt_play_background;
 
 // ...
 // Rotate 90˚
@@ -45,7 +46,7 @@ void rotateBoard(void) {
         for (int x = 0; x < BOARD_SIZE; x++)
             tmp[x][BOARD_SIZE - 1 - y] = board[y][x];
     memcpy(board, tmp, sizeof(board));
-    // strcpy(glitch_msg, "GLITCH: board rotated!");
+
 }
 
 // Flip one random filled cell to the opponent's symbol
@@ -58,7 +59,6 @@ void flipCell(void) {
     if (fc == 0) return;
     int pick = GetRandomValue(0, fc - 1);
     board[fy[pick]][fx[pick]] = (board[fy[pick]][fx[pick]] == 'X') ? 'O' : 'X';
-    // strcpy(glitch_msg, "GLITCH: a cell flipped!");
 }
 
 // Swap two random cells
@@ -68,11 +68,10 @@ void swap2Cells(void) {
     char tmp = board[ay][ax];
     board[ay][ax] = board[by][bx];
     board[by][bx] = tmp;
-    // strcpy(glitch_msg, "GLITCH: cells swapped!");
 }
 
 void glitchChooser(Difficulty diff) {
-    int chance = 0;
+    int chance = 10000;
     if (diff == Weird) {
         chance = GetRandomValue(1, 200);
     } else if (diff == Glitch) {
@@ -84,7 +83,7 @@ void glitchChooser(Difficulty diff) {
     } else if (chance <= 20) {
         flipCell();
         glitch_flash_timer = 0.3f;
-    } else if (chance <= 30) {
+    } else if (chance >= 30 && chance <= 50) {
         swap2Cells();
         glitch_flash_timer = 0.3f;
     }
@@ -142,17 +141,17 @@ int boardFull(void) {
     return full;
 }
 
-int main(void) {
+void run_TTT(void) {
 
     const int width = 1200;
     const int height = 1200;
 
-    InitWindow(width, height, "TikTakToe");
-    SetTargetFPS(60);
-    srand(time(NULL));
+    // resize window for TTT
+    SetWindowSize(width, height);
+    SetWindowTitle("TikTakToe");
 
-    menu_background = LoadTexture("assets/TTT_menu_bg.jpg");
-    play_background = LoadTexture("assets/TTT_bg.jpg");
+    ttt_menu_background = LoadTexture("assets/TTT_menu_bg.jpg");
+    ttt_play_background = LoadTexture("assets/TTT_bg.jpg");
 
     resetBoard();
 
@@ -166,8 +165,8 @@ int main(void) {
 
         case Menu:
         	// Draw BG
-        	DrawTexturePro(menu_background,
-                (Rectangle){0, 0, menu_background.width, menu_background.height},
+        	DrawTexturePro(ttt_menu_background,
+                (Rectangle){0, 0, ttt_menu_background.width, ttt_menu_background.height},
                 (Rectangle){0, 0, GetScreenWidth(), GetScreenHeight()},
                 (Vector2){0, 0}, 0.0f, WHITE);
 
@@ -179,39 +178,44 @@ int main(void) {
             DrawText(h_t, (width - MeasureText(h_t, h_fs)) / 2, 60, h_fs, PURPLE);
 
         	// Instructions
-        	// const char* i_t = "Press ENTER to start";
-        	// const int i_fs = 50;
-        	// DrawText(i_t, (width - MeasureText(i_t, i_fs)) / 2, 350, i_fs, WHITE);
         	const char* i_t2 = "Choose difficulty:";
         	const int i_fs2 = 80;
         	DrawText(i_t2, (width - MeasureText(i_t2, i_fs2)) / 2, 380, i_fs2, MAROON);
             DrawText(i_t2, (width - MeasureText(i_t2, i_fs2)) / 2-5, 380-5, i_fs2, RED);
-            const char* i_t3 = "1-Normal";
+            const char* i_t3 = "a-Normal";
             const int i_fs3 = 50;
             DrawText(i_t3, (width - MeasureText(i_t3, i_fs3)) / 2-3, 470-3, i_fs3, RED);
             DrawText(i_t3, (width - MeasureText(i_t3, i_fs3)) / 2, 470, i_fs3, GOLD);
-            const char* i_t4 = "2-Weird";
+            const char* i_t4 = "b-Weird";
             const int i_fs4 = 50;
             DrawText(i_t4, (width - MeasureText(i_t4, i_fs4)) / 2-3, 540-3, i_fs4, DARKGREEN);
             DrawText(i_t4, (width - MeasureText(i_t4, i_fs4)) / 2, 540, i_fs4, GREEN);
-            const char* i_t5 = "3-Glitch";
+            const char* i_t5 = "c-Glitch";
             const int i_fs5 = 50;
             DrawText(i_t5, (width - MeasureText(i_t5, i_fs5)) / 2-3, 610-3, i_fs5, RED);
             DrawText(i_t5, (width - MeasureText(i_t5, i_fs5)) / 2+3, 610+3, i_fs5, BLUE);
             DrawText(i_t5, (width - MeasureText(i_t5, i_fs5)) / 2, 610, i_fs5, WHITE);
 
-            if (IsKeyPressed(KEY_ONE)) {
+            if (IsKeyPressed(KEY_A)) {
                 current_state = Playing;
                 chosen_diff = Normal;
                 resetBoard();
-            } else if (IsKeyPressed(KEY_TWO)) {
+            } else if (IsKeyPressed(KEY_B)) {
                 current_state = Playing;
                 chosen_diff = Weird;
                 resetBoard();
-            } else if (IsKeyPressed(KEY_THREE)) {
+            } else if (IsKeyPressed(KEY_C)) {
                 current_state = Playing;
                 chosen_diff = Glitch;
                 resetBoard();
+            }
+            // Q on TTT menu = back to RadoGames
+            if (IsKeyPressed(KEY_Q)) {
+                UnloadTexture(ttt_menu_background);
+                UnloadTexture(ttt_play_background);
+                current_state = Menu;
+                EndDrawing();
+                return;
             }
 
         	break;
@@ -222,8 +226,8 @@ int main(void) {
             }
 
         	// Draw BG
-        	DrawTexturePro(play_background,
-                (Rectangle){0, 0, menu_background.width, menu_background.height},
+        	DrawTexturePro(ttt_play_background,
+                (Rectangle){0, 0, ttt_menu_background.width, ttt_menu_background.height},
                 (Rectangle){0, 0, GetScreenWidth(), GetScreenHeight()},
                 (Vector2){0, 0}, 0.0f, WHITE);
 
@@ -317,6 +321,6 @@ int main(void) {
 
     	EndDrawing();
     }
-    UnloadTexture(menu_background);
-    CloseWindow();
+    UnloadTexture(ttt_menu_background);
+    UnloadTexture(ttt_play_background);
 }
