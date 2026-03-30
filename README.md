@@ -26,6 +26,7 @@ Requires [raylib](https://www.raylib.com/) installed.
 >git clone https://github.com/Jam1nna/RadoGames
 >cd RadoGames/
 >make
+>./RadoGames
 ```
 
 ---
