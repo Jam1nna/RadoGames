@@ -164,6 +164,7 @@ void run_TTT(void) {
     	switch (current_state) {
 
         case Menu:
+            
         	// Draw BG
         	DrawTexturePro(ttt_menu_background,
                 (Rectangle){0, 0, ttt_menu_background.width, ttt_menu_background.height},
@@ -224,6 +225,9 @@ void run_TTT(void) {
             if (IsKeyPressed(KEY_R)) {
                 current_state = Menu;
             }
+            
+            // If image doesnt load
+            ClearBackground(LIGHTGRAY);
 
         	// Draw BG
         	DrawTexturePro(ttt_play_background,
