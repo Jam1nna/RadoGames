@@ -12,7 +12,7 @@ Rado GAMES, ou jes!
 | 🐍 **Snake** | snake ale divny |
 | 💣 **MineSweeper** | minesweeper |
 | ❌ **TikTakToe** | tiktaktou s covid 19 |
-| 🪢 **Hangman** | uh... ten neni **WIP** |
+| 🪢 **Hangman** | uh... ten je **WIP** |
 
 ---
 
