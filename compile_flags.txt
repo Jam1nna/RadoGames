@@ -1,5 +1,0 @@
--I/usr/include
--lraylib
--lm
--lpthread
--ldl
